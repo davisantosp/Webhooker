@@ -63,6 +63,18 @@ public class Rule {
         this.sharedSecret = "placeholder-secret";
     }
 
+    // Used for testing
+    public Rule(UUID id, String name, String description, String url, RuleStatus status, String sharedSecret, Instant createdAt, Instant updatedAt) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.url = url;
+        this.status = status;
+        this.sharedSecret = sharedSecret;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
     public Rule() {
     }
 
