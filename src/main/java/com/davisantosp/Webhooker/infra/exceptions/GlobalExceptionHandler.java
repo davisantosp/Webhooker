@@ -12,4 +12,9 @@ public class GlobalExceptionHandler extends RuntimeException {
     public ResponseEntity<String> handleResourceNotFound(ResourceNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
+
+    @ExceptionHandler(ServiceNotAvailableException.class)
+    public ResponseEntity<String> handleResourceNotFound(ServiceNotAvailableException ex) {
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(ex.getMessage());
+    }
 }
