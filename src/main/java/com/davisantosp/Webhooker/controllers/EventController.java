@@ -1,7 +1,7 @@
 package com.davisantosp.Webhooker.controllers;
 
 import com.davisantosp.Webhooker.domain.DTOs.EventRequestDTO;
-import com.davisantosp.Webhooker.services.EventService;
+import com.davisantosp.Webhooker.services.EventProducerService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpStatus;
@@ -12,15 +12,15 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/events")
 public class EventController {
 
-    EventService eventService;
+    EventProducerService eventProducerService;
 
-    public EventController(@NotNull final EventService eventService) {
-        this.eventService = eventService;
+    public EventController(@NotNull final EventProducerService eventProducerService) {
+        this.eventProducerService = eventProducerService;
     }
 
     @PostMapping
     public ResponseEntity post(@Valid @RequestBody EventRequestDTO eventRequestDTO){
-        eventService.addEvent(eventRequestDTO);
+        eventProducerService.addEvent(eventRequestDTO);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 }

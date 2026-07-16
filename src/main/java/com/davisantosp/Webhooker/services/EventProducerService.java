@@ -9,18 +9,17 @@ import org.springframework.stereotype.Service;
 import java.util.concurrent.TimeUnit;
 
 @Service
-public class EventService {
+public class EventProducerService {
 
-    public final KafkaTemplate<String,Object> kafkaTemplate;
-    private static final String TOPIC = "webhooks-topic";
+    public final KafkaTemplate<String,EventRequestDTO> kafkaTemplate;
 
-    public EventService(@NotNull KafkaTemplate<String, Object> kafkaTemplate) {
+    public EventProducerService(@NotNull KafkaTemplate<String, EventRequestDTO> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
 
     public void addEvent(EventRequestDTO eventRequestDTO){
         try {
-            kafkaTemplate.send(TOPIC, eventRequestDTO.userId(), eventRequestDTO)
+            kafkaTemplate.send("webhooker-events", eventRequestDTO.userId(), eventRequestDTO)
                     .get(3, TimeUnit.SECONDS);
 
         } catch (Exception e) {

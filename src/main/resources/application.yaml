@@ -23,3 +23,9 @@ spring:
 
   kafka:
     bootstrap-servers: localhost:9092
+
+  logging:
+    level:
+      org.springframework.kafka: DEBUG
+      org.apache.kafka: DEBUG
+      org.apache.kafka.clients.consumer: DEBUG
