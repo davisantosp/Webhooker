@@ -1,7 +1,5 @@
 package com.davisantosp.Webhooker.domain.DTOs;
 
-import com.davisantosp.Webhooker.domain.enums.RuleStatus;
-
 import java.time.Instant;
 import java.util.UUID;
 
@@ -10,17 +8,21 @@ public class RuleResponseDTO {
     private UUID id;
     private String name;
     private String description;
+    private String userId;
     private String url;
-    private RuleStatus status;
+    private String eventType;
+    private boolean active;
     private Instant createdAt;
     private Instant updatedAt;
 
-    public RuleResponseDTO(UUID id, String name, String description, String url, RuleStatus status, Instant createdAt, Instant updatedAt) {
+    public RuleResponseDTO(UUID id, String name, String description, String userId, String url, String eventType, boolean active, Instant createdAt, Instant updatedAt) {
         this.id = id;
         this.name = name;
         this.description = description;
+        this.userId = userId;
         this.url = url;
-        this.status = status;
+        this.eventType = eventType;
+        this.active = active;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -52,6 +54,14 @@ public class RuleResponseDTO {
         this.description = description;
     }
 
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
     public String getUrl() {
         return url;
     }
@@ -60,12 +70,20 @@ public class RuleResponseDTO {
         this.url = url;
     }
 
-    public RuleStatus getStatus() {
-        return status;
+    public String getEventType() {
+        return eventType;
     }
 
-    public void setStatus(RuleStatus status) {
-        this.status = status;
+    public void setEventType(String eventType) {
+        this.eventType = eventType;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public Instant getCreatedAt() {

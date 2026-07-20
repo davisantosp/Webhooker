@@ -1,0 +1,11 @@
+ALTER TABLE rules
+ADD COLUMN user_id VARCHAR(40);
+
+ALTER TABLE rules
+DROP CONSTRAINT rules_status_check;
+
+ALTER TABLE rules
+RENAME COLUMN status TO active;
+
+ALTER TABLE rules
+ALTER COLUMN active TYPE BOOLEAN USING (active = 'ACTIVE');

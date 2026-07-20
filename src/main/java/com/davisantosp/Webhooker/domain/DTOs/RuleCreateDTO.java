@@ -1,38 +1,50 @@
 package com.davisantosp.Webhooker.domain.DTOs;
 
-import com.davisantosp.Webhooker.domain.enums.RuleStatus;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.hibernate.validator.constraints.URL;
-
-import java.time.Instant;
 
 public class RuleCreateDTO {
 
     @NotBlank
     private String name;
     private String description;
+    @NotBlank
+    private String userId;
     @URL
     @NotBlank
     @Size(max = 2048)
     private String url;
-    private RuleStatus status;
+    @NotBlank
+    private String eventType;
+    private boolean active;
 
-    public RuleCreateDTO(String name, String description, String url) {
+    public RuleCreateDTO(String name, String description, String userId, String url, String eventType, boolean active) {
         this.name = name;
         this.description = description;
+        this.userId = userId;
         this.url = url;
+        this.eventType = eventType;
+        this.active = active;
     }
 
-    public RuleCreateDTO(String name, String description, String url, RuleStatus status) {
+    public RuleCreateDTO(String name, String description, String userId, String url, String eventType) {
         this.name = name;
         this.description = description;
+        this.userId = userId;
         this.url = url;
-        this.status = status;
+        this.eventType = eventType;
     }
 
     public RuleCreateDTO() {
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getName() {
@@ -59,11 +71,19 @@ public class RuleCreateDTO {
         this.url = url;
     }
 
-    public RuleStatus getStatus() {
-        return status;
+    public String getEventType() {
+        return eventType;
     }
 
-    public void setStatus(RuleStatus status) {
-        this.status = status;
+    public void setEventType(String eventType) {
+        this.eventType = eventType;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }
