@@ -49,8 +49,9 @@ public class RuleService {
 
         rule.setName(updatedRule.getName());
         rule.setDescription(updatedRule.getDescription());
-        rule.setStatus(updatedRule.getStatus());
+        rule.setActive(updatedRule.isActive());
         rule.setUrl(updatedRule.getUrl());
+        rule.setEventType(updatedRule.getEventType());
         ruleRepository.save(rule);
 
         RuleResponseDTO ruleResponseDTO = this.parseFromRule(rule);
@@ -67,8 +68,10 @@ public class RuleService {
         Rule rule = new Rule(
                 ruleCreateDTO.getName(),
                 ruleCreateDTO.getDescription(),
+                ruleCreateDTO.getUserId(),
                 ruleCreateDTO.getUrl(),
-                ruleCreateDTO.getStatus()
+                ruleCreateDTO.isActive(),
+                ruleCreateDTO.getEventType()
         );
         return rule;
     }
@@ -78,8 +81,10 @@ public class RuleService {
                 rule.getId(),
                 rule.getName(),
                 rule.getDescription(),
+                rule.getUserId(),
                 rule.getUrl(),
-                rule.getStatus(),
+                rule.getEventType(),
+                rule.isActive(),
                 rule.getCreatedAt(),
                 rule.getUpdatedAt()
         );

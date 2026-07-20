@@ -6,8 +6,12 @@ services:
       - "8080:8080"
     networks:
       - "webhook-network"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://webhooker-db:5432/postgres
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=webhooker-kafka:9094
     depends_on:
       - db
+      - kafka
 
   db:
     image: postgres:17-alpine
@@ -23,9 +27,33 @@ services:
     volumes:
       - webhook-db-volume:/var/lib/postgresql/data
 
+  kafka:
+    image: apache/kafka:latest
+    container_name: webhooker-kafka
+    ports:
+      - "9092:9092"
+      - "9094:9094"
+    networks:
+      - "webhook-network"
+    environment:
+      - KAFKA_NODE_ID=1
+      - KAFKA_PROCESS_ROLES=broker,controller
+      - KAFKA_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_LISTENERS=CLIENT://:9092,DOCKER://:9094,CONTROLLER://:9093
+      - KAFKA_ADVERTISED_LISTENERS=CLIENT://localhost:9092,DOCKER://webhooker-kafka:9094
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,DOCKER:PLAINTEXT,CONTROLLER:PLAINTEXT
+      - KAFKA_CONTROLLER_QUORUM_VOTERS=1@localhost:9093
+      - KAFKA_INTER_BROKER_LISTENER_NAME=DOCKER
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1
+      - KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1
+    volumes:
+      - webhook-kafka-volume:/var/lib/kafka/data
+
 networks:
   webhook-network:
     driver: bridge
 
 volumes:
   webhook-db-volume:
+  webhook-kafka-volume:

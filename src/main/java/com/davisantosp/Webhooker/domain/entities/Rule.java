@@ -1,8 +1,8 @@
 package com.davisantosp.Webhooker.domain.entities;
 
-import com.davisantosp.Webhooker.domain.enums.RuleStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.constraints.URL;
@@ -25,14 +25,21 @@ public class Rule {
 
     private String description;
 
+    @NotNull
+    @Column(nullable = false, length = 40)
+    private String userId;
+
     @URL
     @NotBlank
     @Column(nullable = false, length = 2048)
     private String url;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private RuleStatus status;
+    private boolean active;
+
+    @NotBlank
+    @Column(nullable = false)
+    private String eventType;
 
     @Column(nullable = false)
     private String sharedSecret;
@@ -45,31 +52,42 @@ public class Rule {
     @Column(nullable = false)
     private Instant updatedAt;
 
-    public Rule(String name, String description, String url) {
+    public Rule(String name, String description, String userId, String url, String eventType) {
         this.name = name;
         this.description = description;
+        this.userId = userId;
         this.url = url;
-        this.status = RuleStatus.ACTIVE;
-        //Proper method will be added later
+        this.eventType = eventType;
+        this.active = true;
+    }
+
+    public Rule(String name, String description, String userId, String url, boolean isActive, String eventType) {
+        this.name = name;
+        this.description = description;
+        this.userId = userId;
+        this.url = url;
+        this.active = isActive;
+        this.eventType = eventType;
         this.sharedSecret = "placeholder-secret";
     }
 
-    public Rule(String name, String description, String url, RuleStatus status) {
+    public Rule(String name, String description, String url, boolean isActive, String eventType) {
         this.name = name;
         this.description = description;
         this.url = url;
-        this.status = status;
-        //Proper method will be added later
+        this.active = isActive;
+        this.eventType = eventType;
         this.sharedSecret = "placeholder-secret";
     }
 
-    // Used for testing
-    public Rule(UUID id, String name, String description, String url, RuleStatus status, String sharedSecret, Instant createdAt, Instant updatedAt) {
+    public Rule(UUID id, String name, String description, String userId, String url, boolean isActive, String eventType, String sharedSecret, Instant createdAt, Instant updatedAt) {
         this.id = id;
         this.name = name;
         this.description = description;
+        this.userId = userId;
         this.url = url;
-        this.status = status;
+        this.active = isActive;
+        this.eventType = eventType;
         this.sharedSecret = sharedSecret;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -88,6 +106,14 @@ public class Rule {
         this.name = name;
     }
 
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String user_id) {
+        this.userId = user_id;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -104,12 +130,20 @@ public class Rule {
         this.url = url;
     }
 
-    public RuleStatus getStatus() {
-        return status;
+    public boolean isActive() {
+        return active;
     }
 
-    public void setStatus(RuleStatus status) {
-        this.status = status;
+    public void setActive(boolean status) {
+        this.active = status;
+    }
+
+    public String getEventType() {
+        return eventType;
+    }
+
+    public void setEventType(String eventType) {
+        this.eventType = eventType;
     }
 
     public String getSharedSecret() {

@@ -3,7 +3,7 @@ package com.davisantosp.Webhooker.services;
 import com.davisantosp.Webhooker.domain.DTOs.RuleCreateDTO;
 import com.davisantosp.Webhooker.domain.DTOs.RuleResponseDTO;
 import com.davisantosp.Webhooker.domain.entities.Rule;
-import com.davisantosp.Webhooker.domain.enums.RuleStatus;
+
 import com.davisantosp.Webhooker.infra.exceptions.ResourceNotFoundException;
 import com.davisantosp.Webhooker.repositories.RuleRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,21 +34,27 @@ class RuleServiceTest {
 
     RuleCreateDTO ruleCreateDTO;
     Rule rule;
+    String userId;
 
     @BeforeEach
     void setup(){
+        userId = String.valueOf(UUID.randomUUID());
         ruleCreateDTO = new RuleCreateDTO(
                 "Default Name",
                 "Default description",
+                userId,
                 "https://defaulturl.com",
-                RuleStatus.ACTIVE
+                "user.created",
+                true
         );
         rule = new Rule(
                 UUID.randomUUID(),
                 "Default Name",
                 "Default description",
+                userId,
                 "https://defaulturl.com",
-                RuleStatus.ACTIVE,
+                true,
+                "user.created",
                 "Default-shared-secret",
                 Instant.now(),
                 Instant.now()
@@ -70,9 +76,11 @@ class RuleServiceTest {
             assertEquals(ruleResponseDTO.getName(), rule.getName());
             assertEquals(ruleResponseDTO.getDescription(), rule.getDescription());
             assertEquals(ruleResponseDTO.getUrl(), rule.getUrl());
-            assertEquals(ruleResponseDTO.getStatus(), rule.getStatus());
+            assertEquals(ruleResponseDTO.getEventType(), rule.getEventType());
+            assertEquals(ruleResponseDTO.isActive(), rule.isActive());
             assertEquals(ruleResponseDTO.getCreatedAt(), rule.getCreatedAt());
             assertEquals(ruleResponseDTO.getUpdatedAt(), rule.getUpdatedAt());
+            assertEquals(ruleResponseDTO.getUserId(), rule.getUserId());
 
             verify(ruleRepository, times(1)).findAll();
         }
@@ -109,8 +117,10 @@ class RuleServiceTest {
             assertEquals(testRule.getName(), rule.getName());
             assertEquals(testRule.getDescription(), rule.getDescription());
             assertEquals(testRule.getUrl(), rule.getUrl());
+            assertEquals(testRule.getEventType(), rule.getEventType());
             assertEquals(testRule.getCreatedAt(), rule.getCreatedAt());
             assertEquals(testRule.getUpdatedAt(), rule.getUpdatedAt());
+            assertEquals(testRule.getUserId(), rule.getUserId());
 
             verify(ruleRepository, times(1)).findById(id);
         }
@@ -153,13 +163,17 @@ class RuleServiceTest {
 
             assertEquals(ruleCreateDTO.getName(), ruleSentToDb.getName());
             assertEquals(ruleCreateDTO.getUrl(), ruleSentToDb.getUrl());
-            assertEquals(ruleCreateDTO.getStatus(), ruleSentToDb.getStatus());
+            assertEquals(ruleCreateDTO.getEventType(), ruleSentToDb.getEventType());
+            assertEquals(ruleCreateDTO.isActive(), ruleSentToDb.isActive());
+            assertEquals(ruleCreateDTO.getUserId(), ruleSentToDb.getUserId());
             assertNotNull(ruleSentToDb.getSharedSecret());
 
             assertEquals(ruleResponseDTO.getName(), ruleCreateDTO.getName());
             assertEquals(ruleResponseDTO.getDescription(), ruleCreateDTO.getDescription());
             assertEquals(ruleResponseDTO.getUrl(), ruleCreateDTO.getUrl());
-            assertEquals(ruleResponseDTO.getStatus(), ruleCreateDTO.getStatus());
+            assertEquals(ruleResponseDTO.getEventType(), ruleCreateDTO.getEventType());
+            assertEquals(ruleResponseDTO.isActive(), ruleCreateDTO.isActive());
+            assertEquals(ruleResponseDTO.getUserId(), ruleCreateDTO.getUserId());
         }
     }
 
@@ -174,8 +188,10 @@ class RuleServiceTest {
             updatedRule = new RuleCreateDTO(
                     "New name",
                     "New description",
+                    userId,
                     "http://newurl.com",
-                    RuleStatus.INACTIVE
+                    "order.created",
+                    false
             );
         }
 
@@ -191,11 +207,13 @@ class RuleServiceTest {
             assertEquals(ruleResponseDTO.getName(), updatedRule.getName());
             assertEquals(ruleResponseDTO.getDescription(), updatedRule.getDescription());
             assertEquals(ruleResponseDTO.getUrl(), updatedRule.getUrl());
-            assertEquals(ruleResponseDTO.getStatus(), updatedRule.getStatus());
+            assertEquals(ruleResponseDTO.getEventType(), updatedRule.getEventType());
+            assertEquals(ruleResponseDTO.isActive(), updatedRule.isActive());
 
             assertEquals(ruleResponseDTO.getId(), rule.getId());
             assertEquals(ruleResponseDTO.getCreatedAt(), rule.getCreatedAt());
             assertEquals(ruleResponseDTO.getUpdatedAt(), rule.getUpdatedAt());
+            assertEquals(ruleResponseDTO.getUserId(), rule.getUserId());
 
             verify(ruleRepository, times(1)).findById(id);
         }
